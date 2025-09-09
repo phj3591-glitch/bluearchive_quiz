@@ -1,0 +1,328 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>누구의 R18팬아트가 더 많을까?</title>
+  <style>
+    :root {
+      --bg: #0f172a;       /* slate-900 */
+      --card: #111827;     /* gray-900 */
+      --text: #e5e7eb;     /* gray-200 */
+      --muted: #9ca3af;    /* gray-400 */
+      --accent: #22c55e;   /* green-500 */
+      --danger: #ef4444;   /* red-500 */
+      --brand: #6366f1;    /* indigo-500 */
+      --shadow: 0 10px 30px rgba(0,0,0,.35);
+      --radius: 16px;
+    }
+    * { box-sizing: border-box }
+    html, body { height: 100%; }
+    body {
+      margin: 0; background: radial-gradient(1200px 600px at 80% -10%, #1e293b 0%, #0b1222 40%, #060b15 70%, #05070f 100%), var(--bg);
+      color: var(--text); font-family: system-ui, -apple-system, Segoe UI, Roboto, Apple SD Gothic Neo, Noto Sans KR, sans-serif;
+      display: flex; align-items: center; justify-content: center; padding: 24px;
+    }
+    .app {
+      width: min(1100px, 100%);
+      display: grid; gap: 16px;
+      grid-template-rows: auto 1fr auto;
+      min-height: min(780px, 92vh);
+    }
+    header {
+      display: flex; align-items: center; justify-content: space-between; gap: 12px;
+      background: linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
+      padding: 14px 18px; border: 1px solid rgba(255,255,255,.06); border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+    .brand { font-weight: 800; letter-spacing: .3px; display: flex; align-items: baseline; gap: 10px; }
+    .brand span { font-size: 15px; color: var(--muted); font-weight: 600; }
+    .stats { display: flex; gap: 12px; flex-wrap: wrap; }
+    .badge {
+      background: #0b1222; border: 1px solid rgba(255,255,255,.08); color: var(--text);
+      padding: 8px 12px; border-radius: 999px; font-weight: 700; letter-spacing:.2px
+    }
+    .wrap {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
+    }
+    .card {
+      position: relative; overflow: hidden; border-radius: var(--radius);
+      background: linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
+      border: 1px solid rgba(255,255,255,.06); box-shadow: var(--shadow);
+      cursor: pointer; transform: translateZ(0);
+    }
+    .card[aria-disabled="true"] { pointer-events: none; }
+    .frame {
+      position: relative; width: 100%; aspect-ratio: 4/3; background:#0b1222; display:grid; place-items:center;
+    }
+    .frame img { width: 100%; height: 100%; object-fit: cover; display:block; }
+    .title {
+      position: absolute; left: 12px; bottom: 12px; background: rgba(0,0,0,.5);
+      padding: 6px 10px; border-radius: 8px; font-weight: 700; backdrop-filter: blur(4px);
+    }
+    .number-chip {
+      position: absolute; top: 12px; right: 12px; padding: 6px 10px; border-radius: 999px; font-weight: 800;
+      background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.1); color: var(--muted);
+      user-select: none;
+    }
+    .reveal .number-chip { color: #fff; background: rgba(34,197,94,.2); border-color: rgba(34,197,94,.4);}
+    .card.correct { outline: 3px solid var(--accent); }
+    .card.wrong   { outline: 3px solid var(--danger); filter: grayscale(.4); }
+    .hint { text-align: center; color: var(--muted); margin-top: 6px; font-size: 14px }
+    footer {
+      display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap;
+    }
+    .btn {
+      background: linear-gradient(180deg, #1f2937, #0f172a);
+      border: 1px solid rgba(255,255,255,.08);
+      color: #fff; padding: 12px 16px; border-radius: 12px; font-weight: 800; letter-spacing:.2px;
+      cursor: pointer; transition: .15s transform ease, .15s filter ease;
+    }
+    .btn:hover { transform: translateY(-1px); }
+    .btn.primary { background: linear-gradient(180deg, #6d28d9, #4f46e5); border-color: rgba(255,255,255,.12); }
+    .btn.ghost { background: transparent; border: 1px dashed rgba(255,255,255,.18); color: var(--muted); }
+    .overlay {
+      position: fixed; inset: 0; display: none; place-items: center; padding: 24px;
+      background: rgba(5,7,15,.72); backdrop-filter: blur(6px);
+    }
+    .overlay.show { display: grid; }
+    .dialog {
+      width: min(640px, 96%); background: #0b1222; border: 1px solid rgba(255,255,255,.08);
+      border-radius: 18px; box-shadow: var(--shadow); padding: 20px; text-align: center;
+    }
+    .dialog h2 { margin: 8px 0 6px; }
+    .dialog p { color: var(--muted); margin: 0 0 14px }
+    .kbd { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-weight: 700; font-size: 12px;
+           border: 1px solid rgba(255,255,255,.2); background: rgba(255,255,255,.05); padding: 2px 6px; border-radius: 6px; }
+    @media (max-width: 860px) {
+      .wrap { grid-template-columns: 1fr; }
+      .frame { aspect-ratio: 1/1; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header>
+      <div class="brand">📈 High or Higher <span>— 숫자 더 높은 사진 고르기</span></div>
+      <div class="stats">
+        <div class="badge" id="score">점수 0</div>
+        <div class="badge" id="streak">연속 0</div>
+        <div class="badge" id="best">최고 0</div>
+      </div>
+    </header>
+
+    <main class="wrap" aria-live="polite">
+      <article class="card" id="leftCard" tabindex="0" role="button" aria-label="왼쪽 카드">
+        <div class="frame">
+          <img id="leftImg" alt="">
+          <div class="title" id="leftTitle"></div>
+          <div class="number-chip" id="leftNum">?</div>
+        </div>
+      </article>
+
+      <article class="card" id="rightCard" tabindex="0" role="button" aria-label="오른쪽 카드">
+        <div class="frame">
+          <img id="rightImg" alt="">
+          <div class="title" id="rightTitle"></div>
+          <div class="number-chip" id="rightNum">?</div>
+        </div>
+      </article>
+    </main>
+
+    <div class="hint">
+      사진을 클릭하거나 <span class="kbd">←</span>/<span class="kbd">→</span> 키로 선택하세요.
+      (디버그 숫자 표시: <span class="kbd">D</span>)
+    </div>
+
+    <footer>
+      <div />
+      <div style="display:flex; gap:10px">
+        <button class="btn ghost" id="skipBtn" title="동점/애매하면 새 라운드">건너뛰기</button>
+        <button class="btn primary" id="restartBtn">다시 시작</button>
+      </div>
+    </footer>
+  </div>
+
+  <!-- 게임오버 -->
+  <div class="overlay" id="gameover">
+    <div class="dialog">
+      <h2>게임 오버 😵</h2>
+      <p id="summary">스코어 요약</p>
+      <div style="display:flex; gap:10px; justify-content:center; margin-top:10px">
+        <button class="btn" id="againBtn">다시 도전</button>
+        <button class="btn ghost" id="closeBtn">닫기</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ===== 1) 여기를 당신 데이터로만 바꾸면 됩니다! =====
+    // images/ 폴더에 파일을 넣고, value에 "숫자"를 적으세요.
+    const DATASET = [
+      { src: "images\노노미.png", title: "노노미", value: 12 },
+      { src: "images\노조미.png", title: "노조미", value: 47 },
+      { src: "images\미사키.png", title: "미사키", value: 33 },
+      { src: "images\이부키.png", title: "이부키", value: 88 },
+      { src: "images\카스미.png", title: "카스미", value: 5  },
+    ];
+    // ===============================================
+
+    // 옵션: 숫자 미리보기(디버그). 실행 중 D 키로 토글할 수 있습니다.
+    let showNumbers = false;
+
+    // 상태
+    let left, right;         // 현재 라운드 두 카드
+    let score = 0;
+    let streak = 0;
+    let best = Number(localStorage.getItem("higher_best") || 0);
+    let locked = false;      // 판정 중 클릭 방지
+
+    // DOM
+    const el = (id) => document.getElementById(id);
+    const scoreEl  = el("score");
+    const streakEl = el("streak");
+    const bestEl   = el("best");
+    const leftCard = el("leftCard");
+    const rightCard= el("rightCard");
+    const leftImg  = el("leftImg");
+    const rightImg = el("rightImg");
+    const leftTitle= el("leftTitle");
+    const rightTitle=el("rightTitle");
+    const leftNum  = el("leftNum");
+    const rightNum = el("rightNum");
+    const skipBtn  = el("skipBtn");
+    const restartBtn=el("restartBtn");
+    const overlay  = el("gameover");
+    const againBtn = el("againBtn");
+    const closeBtn = el("closeBtn");
+    const summary  = el("summary");
+
+    // 유틸
+    const randPair = () => {
+      if (DATASET.length < 2) throw new Error("DATASET에 최소 2개 이상의 항목이 필요합니다.");
+      let i = Math.floor(Math.random() * DATASET.length);
+      let j = Math.floor(Math.random() * (DATASET.length - 1));
+      if (j >= i) j += 1;
+      return [DATASET[i], DATASET[j]];
+    };
+    const preload = (srcs) => srcs.forEach(s => { const img = new Image(); img.src = s; });
+
+    // UI 업데이트
+    function updateStats() {
+      scoreEl.textContent  = `점수 ${score}`;
+      streakEl.textContent = `연속 ${streak}`;
+      bestEl.textContent   = `최고 ${best}`;
+    }
+    function setCard(side, item) {
+      const img   = side === "left" ? leftImg   : rightImg;
+      const title = side === "left" ? leftTitle : rightTitle;
+      const chip  = side === "left" ? leftNum   : rightNum;
+      img.src = item.src;
+      img.alt = item.title || "사진";
+      title.textContent = item.title || "";
+      chip.textContent = showNumbers ? item.value : "?";
+    }
+    function clearEffects() {
+      [leftCard, rightCard].forEach(c => {
+        c.classList.remove("correct","wrong","reveal");
+        c.setAttribute("aria-disabled","false");
+      });
+    }
+
+    // 라운드 시작
+    function nextRound(force = false) {
+      if (locked && !force) return;
+      clearEffects();
+      [left, right] = randPair();
+      // 동점 방지: value가 같으면 다시 뽑기
+      let guard = 0;
+      while (left.value === right.value && guard++ < 50) {
+        [left, right] = randPair();
+      }
+      setCard("left", left);
+      setCard("right", right);
+      preload([left.src, right.src]);
+    }
+
+    // 판정
+    function choose(which) {
+      if (locked) return;
+      locked = true;
+
+      const pick = which === "left" ? left : right;
+      const other= which === "left" ? right: left;
+
+      // 숫자 드러내기
+      [leftCard, rightCard].forEach(c => c.classList.add("reveal"));
+      leftNum.textContent  = left.value;
+      rightNum.textContent = right.value;
+
+      const isCorrect = pick.value > other.value;
+
+      const pickedCard = which === "left" ? leftCard : rightCard;
+      const otherCard  = which === "left" ? rightCard: leftCard;
+
+      pickedCard.classList.add(isCorrect ? "correct" : "wrong");
+      otherCard.classList.add(isCorrect ? "wrong"   : "correct");
+      [leftCard, rightCard].forEach(c => c.setAttribute("aria-disabled","true"));
+
+      setTimeout(() => {
+        if (isCorrect) {
+          score += 1;
+          streak += 1;
+          updateStats();
+          locked = false;
+          nextRound(true);
+        } else {
+          gameOver();
+        }
+      }, 700);
+    }
+
+    function gameOver() {
+      if (score > best) {
+        best = score;
+        localStorage.setItem("higher_best", String(best));
+      }
+      updateStats();
+      summary.textContent = `이번 점수 ${score} • 연속 ${streak} • 최고기록 ${best}`;
+      overlay.classList.add("show");
+    }
+
+    function restart() {
+      score = 0;
+      streak = 0;
+      locked = false;
+      overlay.classList.remove("show");
+      updateStats();
+      nextRound(true);
+    }
+
+    // 이벤트
+    leftCard.addEventListener("click",  () => choose("left"));
+    rightCard.addEventListener("click", () => choose("right"));
+    skipBtn.addEventListener("click",   () => { if (!locked) nextRound(true); });
+    restartBtn.addEventListener("click",restart);
+    againBtn.addEventListener("click",  restart);
+    closeBtn.addEventListener("click",  () => overlay.classList.remove("show"));
+
+    window.addEventListener("keydown", (e) => {
+      if (e.key === "ArrowLeft")  choose("left");
+      if (e.key === "ArrowRight") choose("right");
+      if (e.key?.toLowerCase() === "r") restart();
+      if (e.key?.toLowerCase() === "d") {
+        showNumbers = !showNumbers;
+        leftNum.textContent  = showNumbers ? (left?.value ?? "?") : "?";
+        rightNum.textContent = showNumbers ? (right?.value ?? "?") : "?";
+      }
+    });
+
+    // 초기화
+    (function init() {
+      best = Number(localStorage.getItem("higher_best") || 0);
+      updateStats();
+      nextRound(true);
+    })();
+  </script>
+</body>
+</html>
