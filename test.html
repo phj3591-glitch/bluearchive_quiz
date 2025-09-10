@@ -19,9 +19,12 @@
     * { box-sizing: border-box }
     html, body { height: 100%; }
     body {
-      margin: 0; background: radial-gradient(1200px 600px at 80% -10%, #1e293b 0%, #0b1222 40%, #060b15 70%, #05070f 100%), var(--bg);
-      color: var(--text); font-family: system-ui, -apple-system, Segoe UI, Roboto, Apple SD Gothic Neo, Noto Sans KR, sans-serif;
-      display: flex; align-items: center; justify-content: center; padding: 24px;
+      margin: 0;
+      background: radial-gradient(1200px 600px at 80% -10%, #1e293b 0%, #0b1222 40%, #060b15 70%, #05070f 100%), var(--bg);
+      color: var(--text);
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Apple SD Gothic Neo, Noto Sans KR, sans-serif;
+      display: flex; align-items: center; justify-content: center;
+      padding: 24px;
     }
     .app {
       width: min(1100px, 100%);
@@ -32,78 +35,144 @@
     header {
       display: flex; align-items: center; justify-content: space-between; gap: 12px;
       background: linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
-      padding: 14px 18px; border: 1px solid rgba(255,255,255,.06); border-radius: var(--radius);
+      padding: 14px 18px;
+      border: 1px solid rgba(255,255,255,.06);
+      border-radius: var(--radius);
       box-shadow: var(--shadow);
     }
     .brand { font-weight: 800; letter-spacing: .3px; display: flex; align-items: baseline; gap: 10px; }
     .brand span { font-size: 15px; color: var(--muted); font-weight: 600; }
     .stats { display: flex; gap: 12px; flex-wrap: wrap; }
     .badge {
-      background: #0b1222; border: 1px solid rgba(255,255,255,.08); color: var(--text);
-      padding: 8px 12px; border-radius: 999px; font-weight: 700; letter-spacing:.2px
+      background: #0b1222;
+      border: 1px solid rgba(255,255,255,.08);
+      color: var(--text);
+      padding: 8px 12px;
+      border-radius: 999px;
+      font-weight: 700; letter-spacing:.2px
     }
-    .wrap {
-      display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
-    }
+    .wrap { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
     .card {
       position: relative; overflow: hidden; border-radius: var(--radius);
       background: linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
-      border: 1px solid rgba(255,255,255,.06); box-shadow: var(--shadow);
+      border: 1px solid rgba(255,255,255,.06);
+      box-shadow: var(--shadow);
       cursor: pointer; transform: translateZ(0);
     }
     .card[aria-disabled="true"] { pointer-events: none; }
     .frame {
-      position: relative; width: 100%; aspect-ratio: 4/3; background:#0b1222; display:grid; place-items:center;
+      position: relative; width: 100%; aspect-ratio: 4/3;
+      background:#0b1222; display:grid; place-items:center;
     }
     .frame img { width: 100%; height: 100%; object-fit: cover; display:block; }
     .title {
-      position: absolute; left: 12px; bottom: 12px; background: rgba(0,0,0,.5);
-      padding: 6px 10px; border-radius: 8px; font-weight: 700; backdrop-filter: blur(4px);
+      position: absolute; left: 12px; bottom: 12px;
+      background: rgba(0,0,0,.5); padding: 6px 10px; border-radius: 8px;
+      font-weight: 700; backdrop-filter: blur(4px);
     }
+
+
     .number-chip {
-      position: absolute; top: 12px; right: 12px; padding: 6px 10px; border-radius: 999px; font-weight: 800;
-      background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.1); color: var(--muted);
-      user-select: none;
+      position: absolute; top: 12px; right: 12px;
+      padding: 8px 14px; border-radius: 999px; font-weight: 900; font-size: 22px; letter-spacing:.3px;
+      background: rgba(11,18,34,.6);
+      border: 1.5px solid rgba(255,255,255,.22);
+      color: #e5e7eb; user-select: none; backdrop-filter: blur(6px);
+      text-shadow: 0 1px 2px rgba(0,0,0,.7);
+      box-shadow: 0 4px 14px rgba(0,0,0,.35), inset 0 0 0 1px rgba(255,255,255,.05);
+      transform-origin: center;
+      transition: transform .15s ease, background .15s ease, color .15s ease, border-color .15s ease;
     }
-    .reveal .number-chip { color: #fff; background: rgba(34,197,94,.2); border-color: rgba(34,197,94,.4);}
+
+
+    .number-center{
+      position:absolute; inset:0; display:grid; place-items:center;
+      font-weight:900; font-size:clamp(36px, 9vw, 92px); letter-spacing:.5px; color:#ffffff;
+      opacity:0; transform:scale(.8);
+      transition:opacity .2s ease, transform .2s ease;
+      text-shadow: 0 2px 6px rgba(0,0,0,.55), 0 0 18px rgba(0,0,0,.35);
+      pointer-events: none;
+    }
+    .reveal .number-center{ opacity:1; transform:scale(1); }
+    .reveal.correct .number-center{ filter: drop-shadow(0 0 10px rgba(34,197,94,.45)); }
+    .reveal.wrong .number-center{ filter: drop-shadow(0 0 10px rgba(239,68,68,.45)); }
+
+    .reveal .number-chip {
+      color: #fff;
+      background: linear-gradient(180deg, rgba(34,197,94,.28), rgba(34,197,94,.18));
+      border-color: rgba(34,197,94,.55);
+      animation: pop .22s ease-out;
+    }
+    @keyframes pop { 0% { transform: scale(0.7); opacity:.6 } 100% { transform: scale(1); opacity:1 } }
+
     .card.correct { outline: 3px solid var(--accent); }
-    .card.wrong   { outline: 3px solid var(--danger); filter: grayscale(.4); }
+    .card.wrong { outline: 3px solid var(--danger); filter: grayscale(.4); }
+
     .hint { text-align: center; color: var(--muted); margin-top: 6px; font-size: 14px }
-    footer {
-      display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap;
-    }
+
+    footer { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
     .btn {
       background: linear-gradient(180deg, #1f2937, #0f172a);
       border: 1px solid rgba(255,255,255,.08);
-      color: #fff; padding: 12px 16px; border-radius: 12px; font-weight: 800; letter-spacing:.2px;
-      cursor: pointer; transition: .15s transform ease, .15s filter ease;
+      color: #fff; padding: 12px 16px; border-radius: 12px;
+      font-weight: 800; letter-spacing:.2px; cursor: pointer;
+      transition: .15s transform ease, .15s filter ease;
     }
     .btn:hover { transform: translateY(-1px); }
     .btn.primary { background: linear-gradient(180deg, #6d28d9, #4f46e5); border-color: rgba(255,255,255,.12); }
     .btn.ghost { background: transparent; border: 1px dashed rgba(255,255,255,.18); color: var(--muted); }
+
     .overlay {
       position: fixed; inset: 0; display: none; place-items: center; padding: 24px;
       background: rgba(5,7,15,.72); backdrop-filter: blur(6px);
+      z-index: 50;
     }
     .overlay.show { display: grid; }
     .dialog {
-      width: min(640px, 96%); background: #0b1222; border: 1px solid rgba(255,255,255,.08);
-      border-radius: 18px; box-shadow: var(--shadow); padding: 20px; text-align: center;
+      width: min(640px, 96%); background: #0b1222;
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 18px; box-shadow: var(--shadow);
+      padding: 20px; text-align: center;
     }
-    .dialog h2 { margin: 8px 0 6px; }
+    .dialog h2, .dialog h1 { margin: 8px 0 6px; }
     .dialog p { color: var(--muted); margin: 0 0 14px }
-    .kbd { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-weight: 700; font-size: 12px;
-           border: 1px solid rgba(255,255,255,.2); background: rgba(255,255,255,.05); padding: 2px 6px; border-radius: 6px; }
+
+    .kbd {
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-weight: 700; font-size: 12px;
+      border: 1px solid rgba(255,255,255,.2);
+      background: rgba(255,255,255,.05);
+      padding: 2px 6px; border-radius: 6px;
+    }
+
+    
     @media (max-width: 860px) {
       .wrap { grid-template-columns: 1fr; }
       .frame { aspect-ratio: 1/1; }
+      .number-chip { font-size: 20px; padding: 8px 12px; }
     }
   </style>
 </head>
 <body>
-  <div class="app">
+
+  <div class="overlay show" id="intro" aria-hidden="false">
+    <div class="dialog">
+      <h1 id="introTitle">R18 팬아트가 많은 캐릭터는?</h1>
+      <p id="introDesc">블루아카이브 캐릭터만 등장합니다. 일섭 스포주의.</p>
+      <div style="margin-top:12px; color:var(--muted); font-size:14px">
+        조작: <span class="kbd">←</span>/<span class="kbd">→</span> 선택, <span class="kbd">Enter</span>/<span class="kbd">Space</span> 진행
+      </div>
+      <div style="display:flex; gap:10px; justify-content:center; margin-top:14px">
+        <button class="btn primary" id="startBtn">게임 시작</button>
+        <button class="btn ghost" id="justSeeBtn">규칙 보기</button>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="app" aria-hidden="true" id="appRoot">
     <header>
-      <div class="brand">📈 High or Higher <span>— 숫자 더 높은 사진 고르기</span></div>
+      <div class="brand"> 블루아카이브 <span>— 팬아트 더 많은 캐릭터 고르기</span></div>
       <div class="stats">
         <div class="badge" id="score">점수 0</div>
         <div class="badge" id="streak">연속 0</div>
@@ -117,6 +186,7 @@
           <img id="leftImg" alt="">
           <div class="title" id="leftTitle"></div>
           <div class="number-chip" id="leftNum">?</div>
+          <div class="number-center" id="leftNumBig">?</div>
         </div>
       </article>
 
@@ -125,17 +195,17 @@
           <img id="rightImg" alt="">
           <div class="title" id="rightTitle"></div>
           <div class="number-chip" id="rightNum">?</div>
+          <div class="number-center" id="rightNumBig">?</div>
         </div>
       </article>
     </main>
 
     <div class="hint">
-      사진을 클릭하거나 <span class="kbd">←</span>/<span class="kbd">→</span> 키로 선택하세요.
-      (디버그 숫자 표시: <span class="kbd">D</span>)
+      사진을 클릭하거나 <span class="kbd">←</span>/<span class="kbd">→</span> 키로 선택하세요. (디버그 숫자 표시: <span class="kbd">D</span>)
     </div>
 
     <footer>
-      <div />
+      <div></div>
       <div style="display:flex; gap:10px">
         <button class="btn ghost" id="skipBtn" title="동점/애매하면 새 라운드">건너뛰기</button>
         <button class="btn primary" id="restartBtn">다시 시작</button>
@@ -143,8 +213,8 @@
     </footer>
   </div>
 
-  <!-- 게임오버 -->
-  <div class="overlay" id="gameover">
+
+  <div class="overlay" id="gameover" aria-hidden="true">
     <div class="dialog">
       <h2>게임 오버 😵</h2>
       <p id="summary">스코어 요약</p>
@@ -156,71 +226,279 @@
   </div>
 
   <script>
-    // ===== 1) 여기를 당신 데이터로만 바꾸면 됩니다! =====
-    // images/ 폴더에 파일을 넣고, value에 "숫자"를 적으세요.
     const DATASET = [
-      { src: "images\노노미.png", title: "노노미", value: 12 },
-      { src: "images\노조미.png", title: "노조미", value: 47 },
-      { src: "images\미사키.png", title: "미사키", value: 33 },
-      { src: "images\이부키.png", title: "이부키", value: 88 },
-      { src: "images\카스미.png", title: "카스미", value: 5  },
+       { src: "images/호시노.webp", title: "호시노", value: 8901 },
+      { src: "images/유우카.webp", title: "유우카", value: 13319 },
+      { src: "images/아스나.webp", title: "아스나", value: 17458 },
+      { src: "images/히나.webp", title: "히나", value: 7965 },
+      { src: "images/미카.webp", title: "미카", value: 8210 },
+      { src: "images/시로코.webp", title: "시로코", value: 7950 },
+      { src: "images/아리스.webp", title: "아리스", value: 4983 },
+      { src: "images/토키.webp", title: "토키", value: 9149 },
+      { src: "images/마리.webp", title: "마리", value: 7756 },
+      { src: "images/카요코.webp", title: "카요코", value: 3520 },
+      { src: "images/코하루.webp", title: "코하루", value: 4879 },
+      { src: "images/아루.webp", title: "아루", value: 5051 },
+      { src: "images/카즈사.webp", title: "카즈사", value: 5402 },
+      { src: "images/키사키.webp", title: "키사키", value: 7054 },
+      { src: "images/리오.webp", title: "리오", value: 11631 },
+      { src: "images/세이아.webp", title: "세이아", value: 4675 },
+      { src: "images/아로나.webp", title: "아로나", value: 4573 },
+      { src: "images/노아.webp", title: "노아", value: 6050 },
+      { src: "images/모모이.webp", title: "모모이", value: 3479 },
+      { src: "images/아코.webp", title: "아코", value: 7009 },
+      { src: "images/하나코.webp", title: "하나코", value: 5387 },
+      { src: "images/카린.webp", title: "카린", value: 7861 },
+      { src: "images/하스미.webp", title: "하스미", value: 6130 },
+      { src: "images/프라나.webp", title: "프라나", value: 4363 },
+      { src: "images/미도리.webp", title: "미도리", value: 3351 },
+      { src: "images/칸나.webp", title: "칸나", value: 3521 },
+      { src: "images/무츠키.webp", title: "무츠키", value: 3974 },
+      { src: "images/히후미.webp", title: "히후미", value: 2650 },
+      { src: "images/네루.webp", title: "네루", value: 3048 },
+      { src: "images/미유.webp", title: "미유", value: 3319 },
+      { src: "images/사오리.webp", title: "사오리", value: 3161 },
+      { src: "images/우이.webp", title: "우이", value: 2918 },
+      { src: "images/노노미.webp", title: "노노미", value: 5006 },
+      { src: "images/미야코.webp", title: "미야코", value: 3100 },
+      { src: "images/이즈나.webp", title: "이즈나", value: 2903 },
+      { src: "images/나기사.webp", title: "나기사", value: 2203 },
+      { src: "images/노조미.webp", title: "노조미", value: 3780 },
+      { src: "images/히카리.webp", title: "히카리", value: 3664 },
+      { src: "images/아즈사.webp", title: "아즈사", value: 1998 },
+      { src: "images/세리카.webp", title: "세리카", value: 2097 },
+      { src: "images/하루카.webp", title: "하루카", value: 1344 },
+      { src: "images/이오리.webp", title: "이오리", value: 2771 },
+      { src: "images/이로하.webp", title: "이로하", value: 2076 },
+      { src: "images/나츠.webp", title: "나츠", value: 1695 },
+      { src: "images/이치카.webp", title: "이치카", value: 2071 },
+      { src: "images/유즈.webp", title: "유즈", value: 1738 },
+      { src: "images/쿠로코.webp", title: "시로코*테러", value: 1816 },
+      { src: "images/키쿄.webp", title: "키쿄", value: 1638 },
+      { src: "images/이부키.webp", title: "이부키", value: 3317 },
+      { src: "images/사키.webp", title: "사키", value: 1971 },
+      { src: "images/레이사.webp", title: "레이사", value: 893 },
+      { src: "images/코코나.webp", title: "코코나", value: 3137 },
+      { src: "images/와카모.webp", title: "와카모", value: 1687 },
+      { src: "images/하루나.webp", title: "하루나", value: 1199 },
+      { src: "images/히비키.webp", title: "히비키", value: 1132 },
+      { src: "images/코유키.webp", title: "코유키", value: 944 },
+      { src: "images/아츠코.webp", title: "아츠코", value: 916 },
+      { src: "images/슌.webp", title: "슌", value: 2707 },
+      { src: "images/요시미.webp", title: "요시미", value: 833 },
+      { src: "images/츠루기.webp", title: "츠루기", value: 703 },
+      { src: "images/히요리.webp", title: "히요리", value: 1151 },
+      { src: "images/세리나.webp", title: "세리나", value: 1445 },
+      { src: "images/니야니야.webp", title: "니야니야 교수", value: 1648 },
+      { src: "images/에이미.webp", title: "에이미", value: 1231 },
+      { src: "images/후우카.webp", title: "후우카", value: 826 },
+      { src: "images/히마리.webp", title: "히마리", value: 978 },
+      { src: "images/사쿠라코.webp", title: "사쿠라코", value: 1404 },
+      { src: "images/미사키.webp", title: "미사키", value: 480 },
+      { src: "images/츠바키.webp", title: "츠바키", value: 1696 },
+      { src: "images/하레.webp", title: "하레", value: 699 },
+      { src: "images/아이리.webp", title: "아이리", value: 852 },
+      { src: "images/마키.webp", title: "마키", value: 677 },
+      { src: "images/아야네.webp", title: "아야네", value: 1013 },
+      { src: "images/후부키.webp", title: "후부키", value: 930 },
+      { src: "images/유메.webp", title: "유메", value: 669 },
+      { src: "images/아카네.webp", title: "아카네", value: 1210 },
+      { src: "images/시구레.webp", title: "시구레", value: 678 },
+      { src: "images/카스미.webp", title: "카스미", value: 592 },
+      { src: "images/모에.webp", title: "모에", value: 1255 },
+      { src: "images/히나타.webp", title: "히나타", value: 1005 },
+      { src: "images/케이.webp", title: "케이", value: 459 },
+      { src: "images/아키라.webp", title: "아키라", value: 430 },
+      { src: "images/준코.webp", title: "준코", value: 544 },
+      { src: "images/정의실현부.webp", title: "정의실현부 모브", value: 1136 },
+      { src: "images/슈로.webp", title: "슈로", value: 698 },
+      { src: "images/키리노.webp", title: "키리노", value: 464 },
+      { src: "images/치세.webp", title: "치세", value: 726 },
+      { src: "images/사츠키.webp", title: "사츠키", value: 1066 },
+      { src: "images/카에데.webp", title: "카에데", value: 1728 },
+      { src: "images/치히로.webp", title: "치히로", value: 649 },
+      { src: "images/마코토.webp", title: "마코토", value: 302 },
+      { src: "images/키라라.webp", title: "키라라", value: 929 },
+      { src: "images/카야.webp", title: "카야", value: 470 },
+      { src: "images/아오바.webp", title: "아오바", value: 613 },
+      { src: "images/미네.webp", title: "미네", value: 651 },
+      { src: "images/코토리.webp", title: "코토리", value: 471 },
+      { src: "images/유카리.webp", title: "유카리", value: 503 },
+      { src: "images/에리.webp", title: "에리", value: 713 },
+      { src: "images/스즈미.webp", title: "스즈미", value: 138 },
+      { src: "images/나구사.webp", title: "나구사", value: 346 },
+      { src: "images/미치루.webp", title: "미치루", value: 368 },
+      { src: "images/하나에.webp", title: "하나에", value: 887 },
+      { src: "images/루미.webp", title: "루미", value: 610 },
+      { src: "images/우타하.webp", title: "우타하", value: 200 },
+      { src: "images/치나츠.webp", title: "치나츠", value: 737 },
+      { src: "images/카호.webp", title: "카호", value: 667 },
+      { src: "images/린.webp", title: "린", value: 796 },
+      { src: "images/니코.webp", title: "니코", value: 443 },
+      { src: "images/세나.webp", title: "세나", value: 404 },
+      { src: "images/아오이.webp", title: "아오이", value: 562 },
+      { src: "images/카노에.webp", title: "카노에", value: 412 },
+      { src: "images/소라.webp", title: "소라", value: 809 },
+      { src: "images/마시로.webp", title: "마시로", value: 392 },
+      { src: "images/아카리.webp", title: "아카리", value: 489 },
+      { src: "images/레이죠.webp", title: "레이죠", value: 709 },
+      { src: "images/이즈미.webp", title: "이즈미", value: 331 },
+      { src: "images/코타마.webp", title: "코타마", value: 176 },
+      { src: "images/츠쿠요.webp", title: "츠쿠요", value: 453 },
+      { src: "images/미모리.webp", title: "미모리", value: 479 },
+      { src: "images/체리노.webp", title: "체리노", value: 238 },
+      { src: "images/메구.webp", title: "메구", value: 461 },
+      { src: "images/마리나.webp", title: "마리나", value: 444 },
+      { src: "images/렌게.webp", title: "렌게", value: 272 },
+      { src: "images/치아키.webp", title: "치아키", value: 247 },
+      { src: "images/시즈코.webp", title: "시즈코", value: 454 },
+      { src: "images/주리.webp", title: "주리", value: 233 },
+      { src: "images/니야.webp", title: "니야", value: 451 },
+      { src: "images/오토기.webp", title: "오토기", value: 285 },
+      { src: "images/우미카.webp", title: "우미카", value: 198 },
+      { src: "images/노도카.webp", title: "노도카", value: 163 },
+      { src: "images/쿠루미.webp", title: "쿠루미", value: 222 },
+      { src: "images/미나.webp", title: "미나", value: 165 },
+      { src: "images/유키노.webp", title: "유키노", value: 141 },
+      { src: "images/아인.webp", title: "아인", value: 292 },
+      { src: "images/미노리.webp", title: "미노리", value: 76 },
+      { src: "images/스오우.webp", title: "스오우", value: 206 },
+      { src: "images/코노카.webp", title: "코노카", value: 127 },
+      { src: "images/모미지.webp", title: "모미지", value: 182 },
+      { src: "images/카구야.webp", title: "카구야", value: 298 },
+      { src: "images/스미레.webp", title: "스미레", value: 192 },
+      { src: "images/타카네.webp", title: "타카네", value: 202 },
+      { src: "images/사야.webp", title: "사야", value: 170 },
+      { src: "images/총학생회장.webp", title: "총학생회장", value: 151 },
+      { src: "images/메루.webp", title: "메루", value: 161 },
+      { src: "images/모모카.webp", title: "모모카", value: 275 },
+      { src: "images/에리카.webp", title: "에리카", value: 137 },
+      { src: "images/라브.webp", title: "라브", value: 67 },
+      { src: "images/토모에.webp", title: "토모에", value: 183 },
+      { src: "images/소프.webp", title: "소프", value: 207 },
+      { src: "images/스케반.webp", title: "스케반", value: 52 },
+      { src: "images/카이.webp", title: "카이", value: 81 },
+      { src: "images/시미코.webp", title: "시미코", value: 100 },
+      { src: "images/오르.webp", title: "오르", value: 157 },
+      { src: "images/아케미.webp", title: "아케미", value: 112 },
+      { src: "images/피나.webp", title: "피나", value: 101 },
+      { src: "images/발키리.webp", title: "발키리 모브", value: 88 },
+      { src: "images/쿠즈노하.webp", title: "쿠즈노하", value: 53 },
+      { src: "images/레이.webp", title: "레이", value: 79 },
+      { src: "images/아야메.webp", title: "아야메", value: 26 },
+      { src: "images/스모모.webp", title: "스모모", value: 95 },
+      { src: "images/코쿠리코.webp", title: "코쿠리코", value: 67 },
+      { src: "images/말쿠트.webp", title: "말쿠트", value: 33 },
+      { src: "images/레나.webp", title: "레나", value: 77 },
+      { src: "images/츠무기.webp", title: "츠무기", value: 66 },
+      { src: "images/아자미.webp", title: "아자미", value: 49 },
+      { src: "images/인력거.webp", title: "인력거 모브", value: 110 },
+      { src: "images/아유무.webp", title: "아유무", value: 50 },
+      { src: "images/미라이.webp", title: "미라이", value: 73 },
+      { src: "images/야쿠모.webp", title: "야쿠모", value: 31 },
+      { src: "images/선도부.webp", title: "선도부 모브", value: 18 },
+      { src: "images/아라타.webp", title: "아라타", value: 34 },
+      { src: "images/시논.webp", title: "시논", value: 45 },
+      { src: "images/미요.webp", title: "미요", value: 47 },
+      { src: "images/하이네.webp", title: "하이네", value: 6 },
+      { src: "images/폭주족.webp", title: "폭주족 보스", value: 11 },
+      { src: "images/마이.webp", title: "마이", value: 3 },
+      { src: "images/카이텐져.webp", title: "카이텐져", value: 7 },
+      { src: "images/베아트리체.webp", title: "베아트리체", value: 23 },
     ];
-    // ===============================================
-
-    // 옵션: 숫자 미리보기(디버그). 실행 중 D 키로 토글할 수 있습니다.
+  
     let showNumbers = false;
 
-    // 상태
-    let left, right;         // 현재 라운드 두 카드
-    let score = 0;
-    let streak = 0;
-    let best = Number(localStorage.getItem("higher_best") || 0);
-    let locked = false;      // 판정 중 클릭 방지
 
-    // DOM
+    let left, right;
+    let score = 0, streak = 0;
+    let best = Number(localStorage.getItem("higher_best") || 0);
+    let locked = false;         
+    let awaitingNext = false;      
+    let pendingGameOver = false;  
+    let started = false;          
+
+    let nextLeftCarry = null;
+
     const el = (id) => document.getElementById(id);
-    const scoreEl  = el("score");
+    const appRoot = el("appRoot");
+    const scoreEl = el("score");
     const streakEl = el("streak");
-    const bestEl   = el("best");
+    const bestEl = el("best");
     const leftCard = el("leftCard");
-    const rightCard= el("rightCard");
-    const leftImg  = el("leftImg");
+    const rightCard = el("rightCard");
+    const leftImg = el("leftImg");
     const rightImg = el("rightImg");
-    const leftTitle= el("leftTitle");
-    const rightTitle=el("rightTitle");
-    const leftNum  = el("leftNum");
+    const leftTitle = el("leftTitle");
+    const rightTitle= el("rightTitle");
+    const leftNum = el("leftNum");
     const rightNum = el("rightNum");
-    const skipBtn  = el("skipBtn");
-    const restartBtn=el("restartBtn");
-    const overlay  = el("gameover");
+    const leftNumBig= el("leftNumBig");
+    const rightNumBig=el("rightNumBig");
+    const skipBtn = el("skipBtn");
+    const restartBtn= el("restartBtn");
+    const overlay = el("gameover");
     const againBtn = el("againBtn");
     const closeBtn = el("closeBtn");
-    const summary  = el("summary");
+    const summary = el("summary");
+    const intro = el("intro");
+    const startBtn = el("startBtn");
+    const justSeeBtn = el("justSeeBtn");
 
-    // 유틸
-    const randPair = () => {
-      if (DATASET.length < 2) throw new Error("DATASET에 최소 2개 이상의 항목이 필요합니다.");
-      let i = Math.floor(Math.random() * DATASET.length);
-      let j = Math.floor(Math.random() * (DATASET.length - 1));
-      if (j >= i) j += 1;
-      return [DATASET[i], DATASET[j]];
-    };
+    const hintEl = document.querySelector(".hint");
+    const defaultHintHTML = hintEl ? hintEl.innerHTML : "";
+
+    function setHintComparing(mode){
+      if (!hintEl) return;
+      if (mode === "correct") {
+        hintEl.innerHTML = `숫자를 비교해보세요. <b>클릭/Enter/Space</b>로 <b>다음 라운드</b>로 진행합니다.`;
+      } else if (mode === "wrong") {
+        hintEl.innerHTML = `숫자를 비교해보세요. <b>클릭/Enter/Space</b>로 <b>결과창(게임오버)</b>이 열립니다.`;
+      } else {
+        hintEl.innerHTML = defaultHintHTML;
+      }
+    }
+
+    const randIndex = () => Math.floor(Math.random() * DATASET.length);
+    const randItem = () => DATASET[randIndex()];
     const preload = (srcs) => srcs.forEach(s => { const img = new Image(); img.src = s; });
 
-    // UI 업데이트
+    function pickNewRight(exclude) {
+      if (DATASET.length < 2) throw new Error("DATASET에 최소 2개 이상의 항목이 필요합니다.");
+      let candidate = randItem();
+      let guard = 0;
+      while ((candidate === exclude || candidate.value === exclude.value) && guard++ < 100) {
+        candidate = randItem();
+      }
+      return candidate;
+    }
+
+    function randPair() {
+      if (DATASET.length < 2) throw new Error("DATASET에 최소 2개 이상의 항목이 필요합니다.");
+      let a = randItem();
+      let b = randItem();
+      let guard = 0;
+      while ((b === a || b.value === a.value) && guard++ < 100) {
+        b = randItem();
+      }
+      return [a, b];
+    }
+
     function updateStats() {
-      scoreEl.textContent  = `점수 ${score}`;
+      scoreEl.textContent = `점수 ${score}`;
       streakEl.textContent = `연속 ${streak}`;
-      bestEl.textContent   = `최고 ${best}`;
+      bestEl.textContent = `최고 ${best}`;
     }
     function setCard(side, item) {
-      const img   = side === "left" ? leftImg   : rightImg;
+      const img = side === "left" ? leftImg : rightImg;
       const title = side === "left" ? leftTitle : rightTitle;
-      const chip  = side === "left" ? leftNum   : rightNum;
+      const chip = side === "left" ? leftNum : rightNum;
+      const big = side === "left" ? leftNumBig: rightNumBig;
       img.src = item.src;
       img.alt = item.title || "사진";
       title.textContent = item.title || "";
       chip.textContent = showNumbers ? item.value : "?";
+      if (big) big.textContent = showNumbers ? item.value : "?";
     }
     function clearEffects() {
       [leftCard, rightCard].forEach(c => {
@@ -229,41 +507,43 @@
       });
     }
 
-    // 라운드 시작
-    function nextRound(force = false) {
+    function nextRound(force = false, leftFixed = null) {
+      if (!started && !force) return;
       if (locked && !force) return;
       clearEffects();
-      [left, right] = randPair();
-      // 동점 방지: value가 같으면 다시 뽑기
-      let guard = 0;
-      while (left.value === right.value && guard++ < 50) {
+
+      if (leftFixed) {
+        left = leftFixed;
+        right = pickNewRight(left);
+      } else {
         [left, right] = randPair();
       }
+
       setCard("left", left);
       setCard("right", right);
       preload([left.src, right.src]);
     }
 
-    // 판정
     function choose(which) {
+      if (!started) return;
       if (locked) return;
       locked = true;
 
       const pick = which === "left" ? left : right;
-      const other= which === "left" ? right: left;
+      const other = which === "left" ? right : left;
 
-      // 숫자 드러내기
       [leftCard, rightCard].forEach(c => c.classList.add("reveal"));
-      leftNum.textContent  = left.value;
+      leftNum.textContent = left.value;
       rightNum.textContent = right.value;
+      if (leftNumBig) leftNumBig.textContent = left.value;
+      if (rightNumBig) rightNumBig.textContent = right.value;
 
       const isCorrect = pick.value > other.value;
-
       const pickedCard = which === "left" ? leftCard : rightCard;
-      const otherCard  = which === "left" ? rightCard: leftCard;
+      const otherCard  = which === "left" ? rightCard : leftCard;
 
       pickedCard.classList.add(isCorrect ? "correct" : "wrong");
-      otherCard.classList.add(isCorrect ? "wrong"   : "correct");
+      otherCard.classList.add(isCorrect ? "wrong" : "correct");
       [leftCard, rightCard].forEach(c => c.setAttribute("aria-disabled","true"));
 
       setTimeout(() => {
@@ -271,12 +551,36 @@
           score += 1;
           streak += 1;
           updateStats();
-          locked = false;
-          nextRound(true);
+          awaitingNext = true;
+          pendingGameOver = false;
+
+          nextLeftCarry = right;  
+          setHintComparing("correct");
         } else {
-          gameOver();
+          awaitingNext = true;
+          pendingGameOver = true;
+          setHintComparing("wrong");
         }
-      }, 700);
+      }, 400);
+    }
+
+    function proceedAfterReveal() {
+      if (!awaitingNext) return;
+      awaitingNext = false;
+      setHintComparing(null);
+      if (pendingGameOver) {
+        pendingGameOver = false;
+        gameOver();
+        return;
+      }
+      locked = false;
+
+      if (nextLeftCarry) {
+        nextRound(true, nextLeftCarry);
+        nextLeftCarry = null; // 소모
+      } else {
+        nextRound(true);
+      }
     }
 
     function gameOver() {
@@ -285,43 +589,102 @@
         localStorage.setItem("higher_best", String(best));
       }
       updateStats();
-      summary.textContent = `이번 점수 ${score} • 연속 ${streak} • 최고기록 ${best}`;
+      summary.textContent = `이번 점수 ${score} • 최고기록 ${best}`;
       overlay.classList.add("show");
+      overlay.setAttribute("aria-hidden","false");
     }
 
     function restart() {
       score = 0;
       streak = 0;
       locked = false;
+      awaitingNext = false;
+      pendingGameOver = false;
+      nextLeftCarry = null;  
       overlay.classList.remove("show");
+      overlay.setAttribute("aria-hidden","true");
+      setHintComparing(null);
       updateStats();
-      nextRound(true);
+      nextRound(true);      
     }
 
-    // 이벤트
-    leftCard.addEventListener("click",  () => choose("left"));
+    leftCard.addEventListener("click", () => choose("left"));
     rightCard.addEventListener("click", () => choose("right"));
-    skipBtn.addEventListener("click",   () => { if (!locked) nextRound(true); });
-    restartBtn.addEventListener("click",restart);
-    againBtn.addEventListener("click",  restart);
-    closeBtn.addEventListener("click",  () => overlay.classList.remove("show"));
 
-    window.addEventListener("keydown", (e) => {
-      if (e.key === "ArrowLeft")  choose("left");
-      if (e.key === "ArrowRight") choose("right");
-      if (e.key?.toLowerCase() === "r") restart();
-      if (e.key?.toLowerCase() === "d") {
-        showNumbers = !showNumbers;
-        leftNum.textContent  = showNumbers ? (left?.value ?? "?") : "?";
-        rightNum.textContent = showNumbers ? (right?.value ?? "?") : "?";
+    document.addEventListener("click", (e) => {
+      const goShowing = overlay && overlay.classList.contains('show');
+      if (awaitingNext && !goShowing) {
+        const id = (e.target.id || '');
+        if (!['skipBtn','restartBtn','againBtn','closeBtn','leftCard','rightCard','startBtn','justSeeBtn'].includes(id)) {
+          proceedAfterReveal();
+        }
       }
     });
 
-    // 초기화
+    window.addEventListener("keydown", (e) => {
+      const key = e.key?.toLowerCase();
+
+      if (!started) {
+        if (key === "enter" || key === " ") {
+          startGame();
+          e.preventDefault();
+        }
+        return;
+      }
+
+      if (key === "arrowleft") choose("left");
+      if (key === "arrowright") choose("right");
+      if (key === "r") restart();
+      if (key === "d") {
+        showNumbers = !showNumbers;
+        leftNum.textContent = showNumbers ? (left?.value ?? "?") : "?";
+        rightNum.textContent = showNumbers ? (right?.value ?? "?") : "?";
+        if (leftNumBig) leftNumBig.textContent = showNumbers ? (left?.value ?? "?") : "?";
+        if (rightNumBig) rightNumBig.textContent = showNumbers ? (right?.value ?? "?") : "?";
+      }
+      if (awaitingNext && (key === "enter" || key === " ")) {
+        e.preventDefault();
+        proceedAfterReveal();
+      }
+    });
+
+
+    skipBtn.addEventListener("click", () => {
+      if (awaitingNext) {
+        proceedAfterReveal();
+        return;
+      }
+      if (!locked) {
+        nextLeftCarry = null; 
+        nextRound(true);
+      }
+    });
+
+    restartBtn.addEventListener("click", restart);
+    againBtn?.addEventListener("click", restart);
+    closeBtn?.addEventListener("click", () => {
+      overlay.classList.remove("show");
+      overlay.setAttribute("aria-hidden","true");
+    });
+
+    function startGame() {
+      if (started) return;
+      started = true;
+      intro.classList.remove("show");
+      intro.setAttribute("aria-hidden","true");
+      appRoot.setAttribute("aria-hidden","false");
+      restart(); 
+    }
+    startBtn.addEventListener("click", startGame);
+
+    justSeeBtn.addEventListener("click", () => {
+      alert("규칙 예시:\n1) 두 사진 중 숫자가 더 큰 쪽을 고르세요.\n2) 정답이면 다음 라운드로, 오답이면 결과창이 뜹니다.\n3) D 키로 디버그 숫자를 미리 볼 수 있습니다.");
+    });
+
     (function init() {
       best = Number(localStorage.getItem("higher_best") || 0);
       updateStats();
-      nextRound(true);
+      appRoot.setAttribute("aria-hidden","true");
     })();
   </script>
 </body>
