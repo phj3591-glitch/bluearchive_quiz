@@ -204,13 +204,12 @@
       사진을 클릭하거나 <span class="kbd">←</span>/<span class="kbd">→</span> 키로 선택하세요.
     </div>
 
-    <footer>
-      <div></div>
-      <div style="display:flex; gap:10px">
-        <button class="btn ghost" id="skipBtn" title="동점/애매하면 새 라운드">
-        <button class="btn primary" id="restartBtn">다시 시작</button>
-      </div>
-    </footer>
+   <footer>
+  <div></div>
+  <div style="display:flex; gap:10px">
+    <button class="btn primary" id="restartBtn">다시 시작</button>
+  </div>
+</footer>
   </div>
 
 
@@ -435,7 +434,6 @@
     const rightNum = el("rightNum");
     const leftNumBig= el("leftNumBig");
     const rightNumBig=el("rightNumBig");
-    const skipBtn = el("skipBtn");
     const restartBtn= el("restartBtn");
     const overlay = el("gameover");
     const againBtn = el("againBtn");
@@ -615,7 +613,7 @@
       const goShowing = overlay && overlay.classList.contains('show');
       if (awaitingNext && !goShowing) {
         const id = (e.target.id || '');
-        if (!['skipBtn','restartBtn','againBtn','closeBtn','leftCard','rightCard','startBtn','justSeeBtn'].includes(id)) {
+        if (!['restartBtn','againBtn','closeBtn','leftCard','rightCard','startBtn','justSeeBtn'].includes(id)) {
           proceedAfterReveal();
         }
       }
@@ -645,18 +643,6 @@
       if (awaitingNext && (key === "enter" || key === " ")) {
         e.preventDefault();
         proceedAfterReveal();
-      }
-    });
-
-
-    skipBtn.addEventListener("click", () => {
-      if (awaitingNext) {
-        proceedAfterReveal();
-        return;
-      }
-      if (!locked) {
-        nextLeftCarry = null; 
-        nextRound(true);
       }
     });
 
